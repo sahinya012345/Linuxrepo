@@ -13,8 +13,11 @@ Find and replace every instance of MTHREE with M3.
 Find and replace every ; (semicolon) with a , (comma) and ensure there is no space after each ,
 Save and exit the file
 Rename your file to .log and save it in the directory specified by the instructor.
-Answer
+
+
+------------------------------------------------------ANSWER--------------------------------------------------------------
 Because the log file is randomly generated each time, each person's file will be different. Check specifically for the following:
+
 
 All the lines are new orders â e.g., 35=D.
 The first and fifth lines are duplicated.
