@@ -1,0 +1,122 @@
+ANSWER 1
+DELIMITER $$
+
+CREATE PROCEDURE insertConnection(IN connection_name VARCHAR(100))
+BEGIN
+
+DECLARE id_value int;
+
+SELECT count(id) + 1 INTO id_value FROM electricity_connection_type;
+
+INSERT INTO electricity_connection_type
+VALUES
+(id_value,connection_name);
+  
+END;
+
+Footer
+CALL insertConnection('Industrial');
+CALL insertConnection('Small Scale');
+
+SELECT * FROM electricity_connection_type;
+
+ANSWER 2
+DELIMITER $$
+
+CREATE PROCEDURE insertMeter
+(IN meter_number VARCHAR(100),
+IN building_id int)
+
+BEGIN
+
+DECLARE id_value int;
+
+SELECT count(id) + 1 INTO id_value FROM meter;
+
+INSERT INTO meter
+VALUES
+(id_value,meter_number,building_id);
+  
+END$$
+
+DELIMITER ;
+Footer
+CALL insertMeter('SG11111', 3);
+CALL insertMeter('SG22222', 4);
+
+SELECT * FROM meter;
+
+ANSWER 3
+
+DELIMITER $$
+
+CREATE PROCEDURE findTotalUnits 
+(IN meter_number VARCHAR(100)) 
+
+BEGIN 
+
+SELECT SUM(total_units) as total_units
+FROM electricity_reading A 
+JOIN meter B 
+ON B.id = A. meter_id 
+WHERE B.meter_number = meter_number; 
+
+END$$
+
+DELIMITER ;
+
+Footer
+CALL findTotalUnits('SG976232')
+
+ANSWER 4
+
+DELIMITER $$
+
+CREATE FUNCTION findTotalUnits
+(meterNumber varchar(255)) 
+returns int 
+
+BEGIN 
+
+DECLARE g int; 
+
+SELECT SUM(total_units) AS total_units into g 
+FROM electricity_reading A 
+JOIN meter B 
+ON B.id = A. meter_id 
+WHERE B.meter_number = meterNumber; 
+
+RETURN g; 
+
+END$$
+
+DELIMITER ;
+Footer
+SELECT findTotalUnits('SG923564') as total_units;
+
+ANSWER 5
+
+DELIMITER $$
+
+CREATE FUNCTION findCountofBuildingType
+(connection_name  varchar(255)) 
+returns int 
+
+BEGIN 
+
+DECLARE g int; 
+
+SELECT count(A.id) into g 
+FROM building_type A 
+JOIN electricity_connection_type B 
+ON B.id = A. connection_Type_id 
+WHERE B.connection_name = connection_name; 
+
+RETURN g; 
+
+END$$
+
+DELIMITER ;
+
+Footer
+SELECT findCountofBuildingType('HOME') AS building_type_count;
