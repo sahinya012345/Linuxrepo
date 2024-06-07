@@ -1,0 +1,160 @@
+Solution: Coding Exercise 2 - Triggers
+Page
+Settings
+More
+ANSWER 1
+Header
+
+
+CREATE TABLE slab_log_history
+(id int,
+ from_unit int,
+ to_unit int,
+ rate double,
+ action VARCHAR(50));
+DELIMITER $$
+
+create trigger trigger_slab_insert
+before insert on slab for each row 
+
+begin
+
+insert into slab_log_history(from_unit,to_unit,rate,action) 
+values(new.from_unit, new.to_unit, new.rate,'Insert_Slab');
+
+END$$
+
+Footer
+INSERT INTO slab
+VALUES
+(5,2,26000, 50000, 40);
+
+SELECT from_unit, to_unit, rate, action FROM slab_log_history;
+
+ANSWER 2
+Header
+
+
+CREATE TABLE electricity_connection_type_log_history
+(id int,
+connection_name VARCHAR(100),
+action VARCHAR(50));
+DELIMITER $$
+
+create trigger trigger_electricity_connection_type_insert
+after insert on electricity_connection_type for each row 
+
+begin
+
+insert into electricity_connection_type_log_history(connection_name,action) 
+values(new.connection_name,'Insert_Electricity_Connection_Type');
+
+END$$
+
+DELIMITER ;
+
+
+Footer
+INSERT INTO electricity_connection_type
+VALUES
+(3, 'Industrial');
+
+SELECT connection_name, action FROM electricity_connection_type_log_history;
+
+ANSWER 3
+
+Header
+
+
+CREATE TABLE building_log_history
+(id int,
+contact_number VARCHAR(100),
+action VARCHAR(50));
+DELIMITER $$
+
+create trigger trigger_building_bf_update before update 
+on building
+for each row
+
+begin
+
+insert into building_log_history
+set contact_number= old.contact_number,
+action='Before_Update_Building';
+
+
+END$$
+
+DELIMITER ;
+
+Footer
+UPDATE building
+SET contact_number = '+65 12345667'
+WHERE id = 4;
+
+SELECT contact_number, action FROM building_log_history;
+
+ANSWER 4
+
+Header
+
+
+CREATE TABLE meter_log_history
+(id int,
+meter_number VARCHAR(100),
+action VARCHAR(50));
+DELIMITER $$
+
+create trigger trigger_meter_af_update after update 
+on meter
+for each row
+
+begin
+
+insert into meter_log_history 
+set meter_number= new.meter_number,
+action='After_Update_Meter';
+
+
+END$$
+
+DELIMITER ;
+
+Footer
+UPDATE meter
+SET meter_number = 'SG111111'
+WHERE id = 10;
+
+SELECT meter_number, action FROM meter_log_history;
+ANSWER 5
+Header
+
+
+CREATE TABLE building_update_log_history
+(id int,
+name VARCHAR(100),
+action VARCHAR(50));
+DELIMITER $$
+
+create trigger trigger_building_type_bf_update before update 
+on building_type
+for each row
+
+begin
+
+insert into building_update_log_history
+set name= old.name,
+action='Before_Update_Building_Type';
+
+
+END$$
+
+DELIMITER ;
+
+Footer
+UPDATE building_type
+SET name = 'MULTIPLEX'
+WHERE id = 4;
+
+SELECT name, action FROM building_update_log_history;
+Jump to...

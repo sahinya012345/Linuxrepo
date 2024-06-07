@@ -1,0 +1,125 @@
+Solution: Coding Exercise 1 - Triggers
+Page
+Settings
+More
+ANSWER 1
+Header
+
+
+CREATE TABLE route_log_history
+(id int,
+ route_name VARCHAR(100),
+ action VARCHAR(50));
+DELIMITER $$
+
+create trigger trigger_route_insert
+after insert on route for each row 
+
+begin
+
+insert into route_log_history(route_name,action) 
+values(new.route_name,'Insert_Route');
+
+END$$
+
+DELIMITER ;
+
+Footer
+
+INSERT INTO route
+VALUES
+(6, 'EAST COAST LINE');
+
+SELECT route_name, action FROM route_log_history;
+
+ANSWER 2
+Header
+
+
+CREATE TABLE station_log_history
+(id int,
+name VARCHAR(100),
+action VARCHAR(50));
+DELIMITER $$
+
+create trigger trigger_station_bf_update 
+before update on station 
+for each row begin 
+
+insert into station_log_history (name, action) 
+VALUES (old.name,"Before_Update_Station"); 
+
+end $$
+
+DELIMITER ;
+
+Footer
+
+UPDATE station
+SET name = 'MOUNTAIN MRT STATION'
+WHERE id = 521;
+
+SELECT name, action FROM station_log_history;
+
+ANSWER 3
+
+Header
+
+
+CREATE TABLE travel_card_log_history
+(id int,
+person_name VARCHAR(100),
+action VARCHAR(50));
+DELIMITER $$
+
+create trigger trigger_travel_card_af_update after update 
+on travel_card
+for each row
+
+begin
+
+insert into travel_card_log_history 
+set person_name = new.person_name,
+action='After_Update_Travel_Card';
+
+
+END$$
+
+DELIMITER ;
+Footer
+UPDATE travel_card
+SET
+contact_number = '+65 12345677'
+WHERE id =  660;
+
+SELECT person_name, action FROM travel_card_log_history;
+
+ANSWER 4
+
+Header
+
+
+CREATE TABLE travel_payment_log_history
+(id int,
+travel_card_id int,
+amount double,
+action VARCHAR(50));
+
+DELIMITER $$
+
+create trigger trigger_travel_payment_delete 
+after delete on travel_payment 
+for each row 
+
+begin 
+insert into travel_payment_log_history 
+set travel_card_id= old.travel_card_id, amount= old.amount, action='After_Delete_Travel_Payment'; 
+
+END$$
+
+DELIMITER ;
+Footer
+DELETE FROM travel_payment
+WHERE id = 14;
+
+SELECT travel_card_id, amount, action FROM travel_payment_log_history;
